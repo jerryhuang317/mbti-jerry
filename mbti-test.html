@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBTI人格测试</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4A6CF7',
+                        secondary: '#FF8A65',
+                        tertiary: '#4DB6AC',
+                        light: '#F5F7FA',
+                        dark: '#2D3748'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .card-shadow {
+                box-shadow: 0 10px 25px -5px rgba(74, 108, 247, 0.1), 0 8px 10px -6px rgba(74, 108, 247, 0.1);
+            }
+            .btn-hover {
+                transition: all 0.3s ease;
+            }
+            .btn-hover:hover {
+                transform: translateY(-2px);
+            }
+            .progress-animation {
+                transition: width 0.5s ease-in-out;
+            }
+            .result-fade-in {
+                animation: fadeIn 0.8s ease-in-out;
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        }
+    </style>
+</head>
+<body class="font-inter bg-gradient-to-br from-light to-blue-50 min-h-screen">
+    <!-- 导航栏 -->
+    <nav class="bg-white/80 backdrop-blur-sm fixed w-full top-0 z-50 transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-user-circle-o text-primary text-2xl"></i>
+                <span class="text-dark font-semibold text-lg">MBTI人格测试</span>
+            </div>
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="#" class="text-dark/70 hover:text-primary transition-colors">首页</a>
+                <a href="#about" class="text-dark/70 hover:text-primary transition-colors">关于测试</a>
+                <a href="#types" class="text-dark/70 hover:text-primary transition-colors">人格类型</a>
+                <a href="#contact" class="text-dark/70 hover:text-primary transition-colors">联系我们</a>
+            </div>
+            <button class="md:hidden text-dark text-xl" id="menu-toggle">
+                <i class="fa fa-bars"></i>
+            </button>
+        </div>
+        <!-- 移动端菜单 -->
+        <div class="md:hidden hidden bg-white w-full border-t border-gray-100" id="mobile-menu">
+            <div class="container mx-auto px-4 py-3 flex flex-col space-y-3">
+                <a href="#" class="text-dark/70 hover:text-primary transition-colors py-2">首页</a>
+                <a href="#about" class="text-dark/70 hover:text-primary transition-colors py-2">关于测试</a>
+                <a href="#types" class="text-dark/70 hover:text-primary transition-colors py-2">人格类型</a>
+                <a href="#contact" class="text-dark/70 hover:text-primary transition-colors py-2">联系我们</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="container mx-auto px-4 pt-24 pb-16">
+        <!-- 欢迎部分 -->
+        <section id="welcome" class="flex flex-col md:flex-row items-center justify-between gap-8 mb-16">
+            <div class="md:w-1/2 space-y-6">
+                <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-dark leading-tight">
+                    探索你的<span class="text-primary">内在性格</span>
+                </h1>
+                <p class="text-dark/70 text-lg leading-relaxed">
+                    通过专业的MBTI人格测试，了解你的性格特点、潜在优势以及适合的职业和人际关系模式。测试大约需要5-10分钟。
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <button id="start-test" class="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-full font-medium shadow-lg btn-hover flex items-center">
+                        <i class="fa fa-play-circle mr-2"></i>开始测试
+                    </button>
+                    <button class="bg-white hover:bg-gray-50 text-primary border border-primary px-8 py-3 rounded-full font-medium shadow-md btn-hover flex items-center">
+                        <i class="fa fa-info-circle mr-2"></i>了解更多
+                    </button>
+                </div>
+                <div class="flex items-center space-x-4 pt-4">
+                    <div class="flex -space-x-2">
+                        <img src="https://picsum.photos/id/64/40/40" alt="用户头像" class="w-10 h-10 rounded-full border-2 border-white">
+                        <img src="https://picsum.photos/id/65/40/40" alt="用户头像" class="w-10 h-10 rounded-full border-2 border-white">
+                        <img src="https://picsum.photos/id/66/40/40" alt="用户头像" class="w-10 h-10 rounded-full border-2 border-white">
+                    </div>
+                    <p class="text-dark/60 text-sm">已有 <span class="font-semibold text-primary">10,000+</span> 人完成测试</p>
+                </div>
+            </div>
+            <div class="md:w-1/2 relative">
+                <div class="relative z-10 rounded-2xl overflow-hidden shadow-2xl transform hover:scale-[1.02] transition-transform duration-500">
+                    <img src="https://picsum.photos/id/180/600/400" alt="MBTI人格测试" class="w-full h-auto">
+                </div>
+                <div class="absolute -bottom-6 -right-6 w-40 h-40 bg-tertiary/20 rounded-full -z-10 blur-3xl"></div>
+                <div class="absolute -top-6 -left-6 w-40 h-40 bg-primary/20 rounded-full -z-10 blur-3xl"></div>
+            </div>
+        </section>
+
+        <!-- 测试部分 (初始隐藏) -->
+        <section id="test-section" class="hidden mb-16">
+            <div class="bg-white rounded-2xl p-6 md:p-8 card-shadow">
+                <div class="mb-8">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm text-dark/60" id="question-number">问题 1/60</span>
+                        <span class="text-sm text-dark/60" id="time-elapsed">已用时: 00:00</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div id="progress-bar" class="bg-primary h-2.5 rounded-full progress-animation" style="width: 2%"></div>
+                    </div>
+                </div>
+                
+                <div id="question-container" class="mb-8">
+                    <h2 class="text-xl md:text-2xl font-semibold text-dark mb-6" id="question-text">
+                        当你参加一个社交聚会时，你通常会：
+                    </h2>
+                    <div class="space-y-4" id="answers-container">
+                        <button class="answer-btn w-full bg-light hover:bg-primary/5 text-left p-4 rounded-xl border border-gray-200 hover:border-primary/30 transition-all" data-value="E">
+                            <span class="block font-medium text-dark">A. 积极参与并主动与许多人交流</span>
+                            <span class="text-sm text-dark/60">你喜欢成为关注的焦点，享受与人互动的过程</span>
+                        </button>
+                        <button class="answer-btn w-full bg-light hover:bg-primary/5 text-left p-4 rounded-xl border border-gray-200 hover:border-primary/30 transition-all" data-value="I">
+                            <span class="block font-medium text-dark">B. 安静地待在一旁，只与几个熟悉的人交流</span>
+                            <span class="text-sm text-dark/60">你倾向于在小群体中深入交流，需要个人空间</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between items-center">
+                    <button id="prev-question" class="hidden px-6 py-3 bg-white border border-gray-200 text-dark rounded-full hover:bg-gray-50 transition-colors">
+                        <i class="fa fa-arrow-left mr-2"></i>上一题
+                    </button>
+                    <div class="flex space-x-2">
+                        <button id="skip-question" class="px-6 py-3 bg-white border border-gray-200 text-dark rounded-full hover:bg-gray-50 transition-colors">
+                            跳过
+                        </button>
+                        <button id="next-question" class="px-6 py-3 bg-primary text-white rounded-full hover:bg-primary/90 transition-colors">
+                            下一题<i class="fa fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 结果部分 (初始隐藏) -->
+        <section id="result-section" class="hidden mb-16">
+            <div class="bg-white rounded-2xl p-6 md:p-8 card-shadow">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl md:text-3xl font-bold text-dark mb-2" id="result-type">INFJ</h2>
+                    <p class="text-xl text-dark/70 mb-6" id="result-title">提倡者型人格</p>
+                    <div class="inline-block bg-primary/10 text-primary px-6 py-2 rounded-full mb-6">
+                        <span class="text-sm font-medium">富有创造力的理想主义者</span>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                    <div>
+                        <h3 class="text-lg font-semibold text-dark mb-4 flex items-center">
+                            <i class="fa fa-user-circle text-primary mr-2"></i>人格特点
+                        </h3>
+                        <div class="space-y-3" id="result-traits">
+                            <div class="flex items-start">
+                                <i class="fa fa-check-circle text-tertiary mt-1 mr-2"></i>
+                                <p class="text-dark/80">富有洞察力，能理解他人的情感和动机</p>
+                            </div>
+                            <div class="flex items-start">
+                                <i class="fa fa-check-circle text-tertiary mt-1 mr-2"></i>
+                                <p class="text-dark/80">理想主义，对未来有清晰的愿景</p>
+                            </div>
+                            <div class="flex items-start">
+                                <i class="fa fa-check-circle text-tertiary mt-1 mr-2"></i>
+                                <p class="text-dark/80">富有同情心，善于帮助他人成长</p>
+                            </div>
+                            <div class="flex items-start">
+                                <i class="fa fa-check-circle text-tertiary mt-1 mr-2"></i>
+                                <p class="text-dark/80">独立思考，喜欢探索深层次的意义</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold text-dark mb-4 flex items-center">
+                            <i class="fa fa-balance-scale text-primary mr-2"></i>优点与缺点
+                        </h3>
+                        <div class="space-y-3" id="result-strengths">
+                            <div class="flex items-start">
+                                <i class="fa fa-plus-circle text-green-500 mt-1 mr-2"></i>
+                                <p class="text-dark/80">富有创造力和想象力</p>
+                            </div>
+                            <div class="flex items-start">
+                                <i class="fa fa-plus-circle text-green-500 mt-1 mr-2"></i>
+                                <p class="text-dark/80">善解人意，能很好地理解他人需求</p>
+                            </div>
+                            <div class="flex items-start">
+                                <i class="fa fa-minus-circle text-red-500 mt-1 mr-2"></i>
+                                <p class="text-dark/80">容易过度追求完美</p>
+                            </div>
+                            <div class="flex items-start">
+                                <i class="fa fa-minus-circle text-red-500 mt-1 mr-2"></i>
+                                <p class="text-dark/80">可能对批评过于敏感</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    <div class="bg-light rounded-xl p-5">
+                        <h3 class="text-lg font-semibold text-dark mb-3 flex items-center">
+                            <i class="fa fa-heart text-secondary mr-2"></i>理想伴侣
+                        </h3>
+                        <ul class="space-y-2 text-dark/80" id="result-partners">
+                            <li class="flex items-start">
+                                <i class="fa fa-circle text-xs text-primary mt-1.5 mr-2"></i>
+                                <span>INFP - 调停者型人格</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-circle text-xs text-primary mt-1.5 mr-2"></i>
+                                <span>ENFJ - 主人公型人格</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-circle text-xs text-primary mt-1.5 mr-2"></i>
+                                <span>INTJ - 建筑师型人格</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-light rounded-xl p-5">
+                        <h3 class="text-lg font-semibold text-dark mb-3 flex items-center">
+                            <i class="fa fa-briefcase text-secondary mr-2"></i>适合职业
+                        </h3>
+                        <ul class="space-y-2 text-dark/80" id="result-careers">
+                            <li class="flex items-start">
+                                <i class="fa fa-circle text-xs text-primary mt-1.5 mr-2"></i>
+                                <span>心理咨询师</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-circle text-xs text-primary mt-1.5 mr-2"></i>
+                                <span>作家/编辑</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-circle text-xs text-primary mt-1.5 mr-2"></i>
+                                <span>艺术家/设计师</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-circle text-xs text-primary mt-1.5 mr-2"></i>
+                                <span>教师/培训师</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-light rounded-xl p-5">
+                        <h3 class="text-lg font-semibold text-dark mb-3 flex items-center">
+                            <i class="fa fa-users text-secondary mr-2"></i>理想朋友
+                        </h3>
+                        <ul class="space-y-2 text-dark/80" id="result-friends">
+                            <li class="flex items-start">
+                                <i class="fa fa-circle text-xs text-primary mt-1.5 mr-2"></i>
+                                <span>ENFP - 竞选者型人格</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-circle text-xs text-primary mt-1.5 mr-2"></i>
+                                <span>INTP - 逻辑学家型人格</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-circle text-xs text-primary mt-1.5 mr-2"></i>
+                                <span>ISFJ - 守卫者型人格</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="mb-8">
+                    <h3 class="text-lg font-semibold text-dark mb-4 flex items-center">
+                        <i class="fa fa-lightbulb-o text-primary mr-2"></i>发展建议
+                    </h3>
+                    <div class="bg-light rounded-xl p-5 space-y-4" id="result-suggestions">
+                        <div>
+                            <h4 class="font-medium text-dark mb-2">接受不完美</h4>
+                            <p class="text-dark/80">学会接受自己和他人的不完美，认识到完美主义可能阻碍进步。</p>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-dark mb-2">学会表达需求</h4>
+                            <p class="text-dark/80">不要害怕表达自己的需求和感受，与他人建立更开放的沟通。</p>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-dark mb-2">设定边界</h4>
+                            <p class="text-dark/80">学会设定健康的边界，避免过度为他人承担责任而忽略自己的需求。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex flex-wrap justify-center gap-4">
+                    <button id="share-result" class="px-8 py-3 bg-primary text-white rounded-full hover:bg-primary/90 transition-colors flex items-center btn-hover">
+                        <i class="fa fa-share-alt mr-2"></i>分享结果
+                    </button>
+                    <button id="save-result" class="px-8 py-3 bg-white border border-gray-200 text-dark rounded-full hover:bg-gray-50 transition-colors flex items-center btn-hover">
+                        <i class="fa fa-download mr-2"></i>保存结果
+                    </button>
+                    <button id="restart-test" class="px-8 py-3 bg-white border border-gray-200 text-dark rounded-full hover:bg-gray-50 transition-colors flex items-center btn-hover">
+                        <i class="fa fa-refresh mr-2"></i>重新测试
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 关于部分 -->
+        <section id="about" class="mb-16">
+            <div class="text-center mb-12">
+                <h2 class="text-2xl md:text-3xl font-bold text-dark mb-4">关于MBTI人格测试</h2>
+                <p class="text-dark/70 max-w-2xl mx-auto">
+                    MBTI（迈尔斯-布里格斯类型指标）是世界上使用最广泛的人格测评工具之一，它基于瑞士心理学家卡尔·荣格的心理类型理论。
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-white rounded-xl p-6 card-shadow hover:shadow-lg transition-shadow">
+                    <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-5">
+                        <i class="fa fa-users text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-dark mb-3">16种人格类型</h3>
+                    <p class="text-dark/70">
+                        MBTI将人格分为16种不同类型，每种类型都有其独特的特点和偏好。
+                    </p>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 card-shadow hover:shadow-lg transition-shadow">
+                    <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-5">
+                        <i class="fa fa-balance-scale text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-dark mb-3">四个维度</h3>
+                    <p class="text-dark/70">
+                        测试基于四个维度：外向(E) vs 内向(I)、实感(S) vs 直觉(N)、思考(T) vs 情感(F)、判断(J) vs 知觉(P)。
+                    </p>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 card-shadow hover:shadow-lg transition-shadow">
+                    <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-5">
+                        <i class="fa fa-lightbulb-o text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-dark mb-3">自我认知</h3>
+                    <p class="text-dark/70">
+                        通过了解自己的人格类型，你可以更好地理解自己的优点、缺点以及行为模式。
+                    </p>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 card-shadow hover:shadow-lg transition-shadow">
+                    <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-5">
+                        <i class="fa fa-handshake-o text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-dark mb-3">人际关系</h3>
+                    <p class="text-dark/70">
+                        MBTI可以帮助你理解他人的观点和行为，从而改善人际关系和沟通。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 人格类型部分 -->
+        <section id="types" class="mb-16">
+            <div class="text-center mb-12">
+                <h2 class="text-2xl md:text-3xl font-bold text-dark mb-4">16种人格类型</h2>
+                <p class="text-dark/70 max-w-2xl mx-auto">
+                    每个人都有独特的人格特点，了解不同的人格类型可以帮助你更好地理解自己和他人。
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-white rounded-lg p-4 text-center card-shadow hover:shadow-md transition-shadow cursor-pointer">
+                    <h3 class="font-semibold text-dark mb-1">INTJ</h3>
+                    <p class="text-sm text-dark/60">建筑师型人格</p>
+                </div>
+                <div class="bg-white rounded-lg p-4 text-center card-shadow hover:shadow-md transition-shadow cursor-pointer">
+                    <h3 class="font-semibold text-dark mb-1">INTP</h3>
+                    <p class="text-sm text-dark/60">逻辑学家型人格</p>
+                </div>
+                <div class="bg-white rounded-lg p-4 text-center card-shadow hover:shadow-md transition-shadow cursor-pointer">
+                    <h3 class="font-semibold text-dark mb-1">ENTJ</h3>
+                    <p class="text-sm text-dark/60">指挥官型人格</p>
+                </div>
+                <div class="bg-white rounded-lg p-4 text-center card-shadow hover:shadow-md transition-shadow cursor-pointer">
+                    <h3 class="font-semibold text-dark mb-1">ENTP</h3>
+                    <p class="text-sm text-dark/60">辩论家型人格</p>
+                </div>
+                <div class="bg-white rounded-lg p-4 text-center card-shadow hover:shadow-md transition-shadow cursor-pointer">
+                    <h3 class="font-semibold text-dark mb-1">INFJ</h3>
+                    <p class="text-sm text-dark/60">提倡者型人格</p>
+                </div>
+                <div class="bg-white rounded-lg p-4 text-center card-shadow hover:shadow-md transition-shadow cursor-pointer">
+                    <h3 class="font-semibold text-dark mb-1">INFP</h3>
+                    <p class="text-sm text-dark/60">调停者型人格</p>
+                </div>
+                <div class="bg-white rounded-lg p-4 text-center card-shadow hover:shadow-md transition-shadow cursor-pointer">
+                    <h3 class="font-semibold text-dark mb-1">ENFJ</h3>
+                    <p class="text-sm text-dark/60">主人公型人格</p>
+                </div>
+                <div class="bg-white rounded-lg p-4 text-center card-shadow hover:shadow-md transition-shadow cursor-pointer">
+                    <h3 class="font-semibold text-dark mb-1">ENFP</h3>
+                    <p class="text-sm text-dark/60">竞选者型人格</p>
+                </div>
+                <div class="bg-white rounded-lg p-4 text-center card-shadow hover:shadow-md transition-shadow cursor-pointer">
+                    <h3 class="font-semibold text-dark mb-1">ISTJ</h3>
+                    <p class="text-sm text-dark/60">物流师型人格</p>
+                </div>
+                <div class="bg-white rounded-lg p-4 text-center card-shadow hover:shadow-md transition-shadow cursor-pointer">
+                    <h3 class="font-semibold text-dark mb-1">ISFJ</h3>
+                    <p class="text-sm text-dark/60">守卫者型人格</p>
+                </div>
+                <div class="bg-white rounded-lg p-4 text-center card-shadow hover:shadow-md transition-shadow cursor-pointer">
+                    <h3 class="font-semibold text-dark mb-1">ESTJ</h3>
+                    <p class="text-sm text-dark/60">总经理型人格</p>
+                </div>
+                <div class="bg-white rounded-lg p-4 text-center card-shadow hover:shadow-md transition-shadow cursor-pointer">
+                    <h3 class="font-semibold text-dark mb-1">ESFJ</h3>
+                    <p class="text-sm text-dark/60">执政官型人格</p>
+                </div>
+                <div class="bg-white rounded-lg p-4 text-center card-shadow hover:shadow-md transition-shadow cursor-pointer">
+                    <h3 class="font-semibold text-dark mb-1">ISTP</h3>
+                    <p class="text-sm text-dark/60">鉴赏家型人格</p>
+                </div>
+                <div class="bg-white rounded-lg p-4 text-center card-shadow hover:shadow-md transition-shadow cursor-pointer">
+                    <h3 class="font-semibold text-dark mb-1">ISFP</h3>
+                    <p class="text-sm text-dark/60">探险家型人格</p>
+                </div>
+                <div class="bg-white rounded-lg p-4 text-center card-shadow hover:shadow-md transition-shadow cursor-pointer">
+                    <h3 class="font-semibold text-dark mb-1">ESTP</h3>
+                    <p class="text-sm text-dark/60">企业家型人格</p>
+                </div>
+                <div class="bg-white rounded-lg p-4 text-center card-shadow hover:shadow-md transition-shadow cursor-pointer">
+                    <h3 class="font-semibold text-dark mb-1">ESFP</h3>
+                    <p class="text-sm text-dark/60">表演者型人格</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 联系部分 -->
+        <section id="contact" class="mb-16">
+            <div class="bg-white rounded-2xl overflow-hidden card-shadow">
+                <div class="grid grid-cols-1 md:grid-cols-2">
+                    <div class="p-8 md:p-10">
+                        <h2 class="text-2xl font-bold text-dark mb-6">有任何问题？</h2>
+                        <p class="text-dark/70 mb-8">
+                            如果你对MBTI测试有任何疑问，或者需要了解更多关于人格类型的信息，请随时联系我们。
+                        </p>
+                        
+                        <form class="space-y-4">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-dark/80 mb-1">姓名</label>
+                                <input type="text" id="name" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors" placeholder="请输入您的姓名">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-dark/80 mb-1">邮箱</label>
+                                <input type="email" id="email" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors" placeholder="请输入您的邮箱">
+                            </div>
+                            <div>
+                                <label for="message" class="block text-sm font-medium text-dark/80 mb-1">留言</label>
+                                <textarea id="message" rows="4" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors" placeholder="请输入您的留言"></textarea>
+                            </div>
+                            <button type="submit" class="w-full bg-primary text-white py-3 rounded-lg hover:bg-primary/90 transition-colors font-medium">
+                                发送消息
+                            </button>
+                        </form>
+                    </div>
+                    <div class="bg-primary/5 p-8 md:p-10 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-xl font-semibold text-dark mb-6">联系方式</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-4">
+                                        <i class="fa fa-envelope text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-dark mb-1">邮箱</h4>
+                                        <p class="text-dark/70">contact@mbti-test.com</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-4">
+                                        <i class="fa fa-phone text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-dark mb-1">电话</h4>
+                                        <p class="text-dark/70">+86 123 4567 8910</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-4">
+                                        <i class="fa fa-map-marker text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-dark mb-1">地址</h4>
+                                        <p class="text-dark/70">北京市朝阳区建国路88号</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-8">
+                            <h3 class="text-xl font-semibold text-dark mb-4">关注我们</h3>
+                            <div class="flex space-x-4">
+                                <a href="#" class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors">
+                                    <i class="fa fa-weixin"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors">
+                                    <i class="fa fa-weibo"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors">
+                                    <i class="fa fa-qq"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors">
+                                    <i class="fa fa-instagram"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white/80 py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fa fa-user-circle-o text-white text-2xl"></i>
+                        <span class="font-semibold text-white text-lg">MBTI人格测试</span>
+                    </div>
+                    <p class="mb-4">
+                        专业的MBTI人格测试平台，帮助你了解自己的性格特点和潜在优势。
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-white/60 hover:text-white transition-colors">
+                            <i class="fa fa-weixin"></i>
+                        </a>
+                        <a href="#" class="text-white/60 hover:text-white transition-colors">
+                            <i class="fa fa-weibo"></i>
+                        </a>
+                        <a href="#" class="text-white/60 hover:text-white transition-colors">
+                            <i class="fa fa-qq"></i>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-white mb-4">快速链接</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-white/60 hover:text-white transition-colors">首页</a></li>
+                        <li><a href="#about" class="text-white/60 hover:text-white transition-colors">关于测试</a></li>
+                        <li><a href="#types" class="text-white/60 hover:text-white transition-colors">人格类型</a></li>
+                        <li><a href="#contact" class="text-white/60 hover:text-white transition-colors">联系我们</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-white mb-4">资源</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-white/60 hover:text-white transition-colors">人格类型介绍</a></li>
+                        <li><a href="#" class="text-white/60 hover:text-white transition-colors">职业发展指南</a></li>
+                        <li><a href="#" class="text-white/60 hover:text-white transition-colors">人际关系建议</a></li>
+                        <li><a href="#" class="text-white/60 hover:text-white transition-colors">常见问题</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-white mb-4">订阅更新</h3>
+                    <p class="mb-4">订阅我们的通讯，获取最新的人格心理学资讯。</p>
+                    <form class="flex">
+                        <input type="email" placeholder="您的邮箱地址" class="px-4 py-2 rounded-l-lg w-full focus:outline-none">
+                        <button type="submit" class="bg-primary text-white px-4 py-2 rounded-r-lg hover:bg-primary/90 transition-colors">
+                            订阅
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="pt-8 border-t border-white/10 text-center text-white/60 text-sm">
+                <p>© 2025 MBTI人格测试. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 分享模态框 (初始隐藏) -->
+    <div id="share-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 result-fade-in">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-semibold text-dark">分享测试结果</h3>
+                <button id="close-share-modal" class="text-dark/50 hover:text-dark">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            <p class="text-dark/70 mb-6">
+                复制下面的链接分享给你的朋友，或者通过社交媒体分享你的MBTI人格类型。
+            </p>
+            <div class="flex mb-6">
+                <input type="text" value="https://mbti-test.com/result/infj" class="flex-1 px-4 py-2 border border-gray-200 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary" readonly>
+                <button class="bg-primary text-white px-4 py-2 rounded-r-lg hover:bg-primary/90 transition-colors">
+                    复制
+                </button>
+            </div>
+            <div class="grid grid-cols-4 gap-4">
+                <a href="#" class="bg-[#07C160]/10 text-[#07C160] p-3 rounded-lg text-center hover:bg-[#07C160]/20 transition-colors">
+                    <i class="fa fa-weixin text-xl mb-1"></i>
+                    <p class="text-sm">微信</p>
+                </a>
+                <a href="#" class="bg-[#E6162D]/10 text-[#E6162D] p-3 rounded-lg text-center hover:bg-[#E6162D]/20 transition-colors">
+                    <i class="fa fa-weibo text-xl mb-1"></i>
+                    <p class="text-sm">微博</p>
+                </a>
+                <a href="#" class="bg-[#1DA1F2]/10 text-[#1DA1F2] p-3 rounded-lg text-center hover:bg-[#1DA1F2]/20 transition-colors">
+                    <i class="fa fa-twitter text-xl mb-1"></i>
+                    <p class="text-sm">Twitter</p>
+                </a>
+                <a href="#" class="bg-[#4267B2]/10 text-[#4267B2] p-3 rounded-lg text-center hover:bg-[#4267B2]/20 transition-colors">
+                    <i class="fa fa-facebook text-xl mb-1"></i>
+                    <p class="text-sm">Facebook</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 测试问题数据
+        const questions = [
+            {
+                text: "当你参加一个社交聚会时，你通常会：",
+                options: [
+                    { value: "E", text: "积极参与并主动与许多人交流", description: "你喜欢成为关注的焦点，享受与人互动的过程" },
+                    { value: "I", text: "安静地待在一旁，只与几个熟悉的人交流", description: "你倾向于在小群体中深入交流，需要个人空间" }
+                ]
+            },
+            {
+                text: "当需要做决策时，你更倾向于：",
+                options: [
+                    { value: "T", text: "基于逻辑和客观分析做出决定", description: "你重视公平和理性，倾向于从事实出发" },
+                    { value: "F", text: "考虑他人的感受和需求后再做决定", description: "你重视人际关系，倾向于从情感和价值观出发" }
+                ]
+            },
+            {
+                text: "当面对新的信息时，你通常会：",
+                options: [
+                    { value: "S", text: "关注具体的细节和事实", description: "你喜欢通过实际经验和具体数据来理解事物" },
+                    { value: "N", text: "寻找其中的模式和可能性", description: "你喜欢思考未来的可能性，关注大局和整体" }
+                ]
+            },
+            {
+                text: "在安排自己的生活时，你更倾向于：",
+                options: [
+                    { value: "J", text: "制定详细的计划并严格执行", description: "你喜欢有序和可控的生活，喜欢做决定" },
+                    { value: "P", text: "保持灵活性，随时准备调整计划", description: "你喜欢开放和自由的生活，喜欢保持选择的余地" }
+                ]
+            },
+            {
+                text: "当你有空闲时间时，你通常会：",
+                options: [
+                    { value: "I", text: "独自安静地读书、思考或做自己的爱好", description: "你从独处中获得能量，享受自己的内心世界" },
+                    { value: "E", text: "和朋友一起参加社交活动或聚会", description: "你从与他人的互动中获得能量，喜欢社交场合" }
+                ]
+            },
+            {
+                text: "当你遇到问题时，你通常会：",
+                options: [
+                    { value: "T", text: "冷静地分析问题，寻找解决方案", description: "你倾向于理性思考，重视逻辑和效率" },
+                    { value: "F", text: "先考虑问题对自己和他人的影响", description: "你倾向于情感思考，重视人际关系和和谐" }
+                ]
+            },
+            {
+                text: "当你学习新事物时，你更喜欢：",
+                options: [
+                    { value: "S", text: "通过实际操作和经验来学习", description: "你喜欢具体的、实际的学习方式" },
+                    { value: "N", text: "通过理论和概念来学习", description: "你喜欢抽象的、理论的学习方式" }
+                ]
+            },
+            {
+                text: "在团队合作中，你更倾向于：",
+                options: [
+                    { value: "J", text: "制定明确的目标和计划，并确保团队按计划执行", description: "你喜欢有序和结构化的工作环境" },
+                    { value: "P", text: "保持开放的心态，根据实际情况调整计划", description: "你喜欢灵活和适应性强的工作环境" }
+                ]
+            },
+            // 这里可以添加更多问题...
+        ];
+
+        // 人格类型数据
+        const personalityTypes = {
+            "INTJ": {
+                name: "建筑师型人格",
+                description: "富有创造力的战略思想家，对未来有清晰的愿景",
+                traits: [
+                    "富有洞察力，能理解复杂的概念",
+                    "独立自主，喜欢按照自己的方式做事",
+                    "理性客观，善于分析问题和解决问题",
+                    "具有前瞻性，能看到未来的可能性"
+                ],
+                strengths: [
+                    "富有创造力和想象力",
+                    "逻辑清晰，善于分析",
+                    "独立自信，有决断力",
+                    "有远见，能看到大局"
+                ],
+                weaknesses: [
+                    "可能过于理性，忽略他人的情感",
+                    "对自己和他人要求过高",
+                    "不擅长表达情感",
+                    "可能过于固执己见"
+                ],
+                partners: ["INFP", "ENFJ", "INTJ"],
+                careers: ["科学家", "工程师", "战略规划师", "技术顾问"],
+                friends: ["ENFP", "INTP", "ENTJ"],
+                suggestions: [
+                    { title: "学会表达情感", content: "尝试更加开放地表达自己的情感和感受，这有助于建立更深入的人际关系。" },
+                    { title: "接受不完美", content: "认识到完美是不可能的，学会接受自己和他人的不完美。" },
+                    { title: "倾听他人意见", content: "尝试更加开放地听取他人的意见和建议，这可能会带来新的视角和想法。" }
+                ]
+            },
+            "INFJ": {
+                name: "提倡者型人格",
+                description: "富有创造力的理想主义者，善于理解他人的情感和需求",
+                traits: [
+                    "富有洞察力，能理解他人的情感和动机",
+                    "理想主义，对未来有清晰的愿景",
+                    "富有同情心，善于帮助他人成长",
+                    "独立思考，喜欢探索深层次的意义"
+                ],
+                strengths: [
+                    "富有创造力和想象力",
+                    "善解人意，能很好地理解他人需求",
+                    "有强烈的价值观和使命感",
+                    "擅长与人建立深层次的联系"
+                ],
+                weaknesses: [
+                    "容易过度追求完美",
+                    "可能对批评过于敏感",
+                    "倾向于隐藏自己的情感",
+                    "可能会为了他人而牺牲自己的需求"
+                ],
+                partners: ["INFP", "ENFJ", "INTJ"],
+                careers: ["心理咨询师", "作家/编辑", "艺术家/设计师", "教师/培训师"],
+                friends: ["ENFP", "INTP", "ISFJ"],
+                suggestions: [
+                    { title: "接受不完美", content: "学会接受自己和他人的不完美，认识到完美主义可能阻碍进步。" },
+                    { title: "学会表达需求", content: "不要害怕表达自己的需求和感受，与他人建立更开放的沟通。" },
+                    { title: "设定边界", content: "学会设定健康的边界，避免过度为他人承担责任而忽略自己的需求。" }
+                ]
+            },
+            // 可以添加更多人格类型...
+        };
+
+        // 测试状态
+        let currentQuestionIndex = 0;
+        const answers = Array(questions.length).fill(null);
+        let startTime;
+        let timerInterval;
+
+        // DOM元素
+        const welcomeSection = document.getElementById('welcome');
+        const testSection = document.getElementById('test-section');
+        const resultSection = document.getElementById('result-section');
+        const startTestBtn = document.getElementById('start-test');
+        const prevQuestionBtn = document.getElementById('prev-question');
+        const nextQuestionBtn = document.getElementById('next-question');
+        const skipQuestionBtn = document.getElementById('skip-question');
+        const restartTestBtn = document.getElementById('restart-test');
+        const questionText = document.getElementById('question-text');
+        const answersContainer = document.getElementById('answers-container');
+        const questionNumber = document.getElementById('question-number');
+        const progressBar = document.getElementById('progress-bar');
+        const timeElapsed = document.getElementById('time-elapsed');
+        const navbar = document.getElementById('navbar');
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const shareResultBtn = document.getElementById('share-result');
+        const saveResultBtn = document.getElementById('save-result');
+        const shareModal = document.getElementById('share-modal');
+        const closeShareModal = document.getElementById('close-share-modal');
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 10) {
+                navbar.classList.add('shadow-md');
+                navbar.classList.remove('py-3');
+                navbar.classList.add('py-2');
+            } else {
+                navbar.classList.remove('shadow-md');
+                navbar.classList.add('py-3');
+                navbar.classList.remove('py-2');
+            }
+        });
+
+        // 移动端菜单切换
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // 开始测试
+        startTestBtn.addEventListener('click', startTest);
+
+        function startTest() {
+            welcomeSection.classList.add('hidden');
+            testSection.classList.remove('hidden');
+            loadQuestion(currentQuestionIndex);
+            startTime = new Date();
+            startTimer();
+            // 平滑滚动到测试部分
+            testSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 加载问题
+        function loadQuestion(index) {
+            if (index < 0 || index >= questions.length) return;
+            
+            const question = questions[index];
+            questionText.textContent = question.text;
+            questionNumber.textContent = `问题 ${index + 1}/${questions.length}`;
+            progressBar.style.width = `${((index + 1) / questions.length) * 100}%`;
+            
+            // 更新答案按钮
+            answersContainer.innerHTML = '';
+            question.options.forEach(option => {
+                const button = document.createElement('button');
+                button.className = `answer-btn w-full bg-light hover:bg-primary/5 text-left p-4 rounded-xl border border-gray-200 hover:border-primary/30 transition-all ${answers[index] === option.value ? 'bg-primary/5 border-primary/30' : ''}`;
+                button.dataset.value = option.value;
+                button.innerHTML = `
+                    <span class="block font-medium text-dark">${option.text}</span>
+                    <span class="text-sm text-dark/60">${option.description}</span>
+                `;
+                button.addEventListener('click', () => selectAnswer(index, option.value));
+                answersContainer.appendChild(button);
+            });
+            
+            // 更新按钮状态
+            prevQuestionBtn.classList.toggle('hidden', index === 0);
+            nextQuestionBtn.textContent = index === questions.length - 1 ? '完成测试' : '下一题';
+            skipQuestionBtn.disabled = index === questions.length - 1;
+        }
+
+        // 选择答案
+        function selectAnswer(index, value) {
+            answers[index] = value;
+            loadQuestion(index); // 重新加载问题以更新按钮状态
+        }
+
+        // 上一题
+        prevQuestionBtn.addEventListener('click', () => {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+            }
+        });
+
+        // 下一题或完成测试
+        nextQuestionBtn.addEventListener('click', () => {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+            } else {
+                completeTest();
+            }
+        });
+
+        // 跳过问题
+        skipQuestionBtn.addEventListener('click', () => {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+            }
+        });
+
+        // 重新测试
+        restartTestBtn.addEventListener('click', () => {
+            // 重置测试状态
+            currentQuestionIndex = 0;
+            answers.fill(null);
+            clearInterval(timerInterval);
+            
+            // 显示欢迎页面，隐藏结果页面
+            resultSection.classList.add('hidden');
+            welcomeSection.classList.remove('hidden');
+        });
+
+        // 开始计时器
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                const now = new Date();
+                const elapsedSeconds = Math.floor((now - startTime) / 1000);
+                const minutes = Math.floor(elapsedSeconds / 60).toString().padStart(2, '0');
+                const seconds = (elapsedSeconds % 60).toString().padStart(2, '0');
+                timeElapsed.textContent = `已用时: ${minutes}:${seconds}`;
+            }, 1000);
+        }
+
+        // 完成测试，计算结果
+        function completeTest() {
+            clearInterval(timerInterval);
+            
+            // 计算四个维度的得分
+            const scores = {
+                E: 0, I: 0,
+                S: 0, N: 0,
+                T: 0, F: 0,
+                J: 0, P: 0
+            };
+            
+            answers.forEach(answer => {
+                if (answer) {
+                    scores[answer]++;
+                }
+            });
+            
+            // 确定人格类型
+            const type = [
+                scores.E > scores.I ? 'E' : 'I',
+                scores.S > scores.N ? 'S' : 'N',
+                scores.T > scores.F ? 'T' : 'F',
+                scores.J > scores.P ? 'J' : 'P'
+            ].join('');
+            
+            // 显示结果
+            displayResult(type);
+            
+            // 隐藏测试部分，显示结果部分
+            testSection.classList.add('hidden');
+            resultSection.classList.remove('hidden');
+            
+            // 平滑滚动到结果部分
+            resultSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 显示结果
+        function displayResult(type) {
+            const personality = personalityTypes[type] || personalityTypes['INFJ']; // 默认显示INFJ
+            
+            // 更新结果标题
+            document.getElementById('result-type').textContent = type;
+            document.getElementById('result-title').textContent = personality.name;
+            
+            // 更新人格特点
+            const traitsContainer = document.getElementById('result-traits');
+            traitsContainer.innerHTML = '';
+            personality.traits.forEach(trait => {
+                const item = document.createElement('div');
+                item.className = 'flex items-start';
+                item.innerHTML = `
+                    <i class="fa fa-check-circle text-tertiary mt-1 mr-2"></i>
+                    <p class="text-dark/80">${trait}</p>
+                `;
+                traitsContainer.appendChild(item);
+            });
+            
+            // 更新优点和缺点
+            const strengthsContainer = document.getElementById('result-strengths');
+            strengthsContainer.innerHTML = '';
+            personality.strengths.forEach(strength => {
+                const item = document.createElement('div');
+                item.className = 'flex items-start';
+                item.innerHTML = `
+                    <i class="fa fa-plus-circle text-green-500 mt-1 mr-2"></i>
+                    <p class="text-dark/80">${strength}</p>
+                `;
+                strengthsContainer.appendChild(item);
+            });
+            personality.weaknesses.forEach(weakness => {
+                const item = document.createElement('div');
+                item.className = 'flex items-start';
+                item.innerHTML = `
+                    <i class="fa fa-minus-circle text-red-500 mt-1 mr-2"></i>
+                    <p class="text-dark/80">${weakness}</p>
+                `;
+                strengthsContainer.appendChild(item);
+            });
+            
+            // 更新理想伴侣
+            const partnersContainer = document.getElementById('result-partners');
+            partnersContainer.innerHTML = '';
+            personality.partners.forEach(partner => {
+                const item = document.createElement('li');
+                item.className = 'flex items-start';
+                item.innerHTML = `
+                    <i class="fa fa-circle text-xs text-primary mt-1.5 mr-2"></i>
+                    <span>${partner} - ${personalityTypes[partner] ? personalityTypes[partner].name : '未知类型'}</span>
+                `;
+                partnersContainer.appendChild(item);
+            });
+            
+            // 更新适合职业
+            const careersContainer = document.getElementById('result-careers');
+            careersContainer.innerHTML = '';
+            personality.careers.forEach(career => {
+                const item = document.createElement('li');
+                item.className = 'flex items-start';
+                item.innerHTML = `
+                    <i class="fa fa-circle text-xs text-primary mt-1.5 mr-2"></i>
+                    <span>${career}</span>
+                `;
+                careersContainer.appendChild(item);
+            });
+            
+            // 更新理想朋友
+            const friendsContainer = document.getElementById('result-friends');
+            friendsContainer.innerHTML = '';
+            personality.friends.forEach(friend => {
+                const item = document.createElement('li');
+                item.className = 'flex items-start';
+                item.innerHTML = `
+                    <i class="fa fa-circle text-xs text-primary mt-1.5 mr-2"></i>
+                    <span>${friend} - ${personalityTypes[friend] ? personalityTypes[friend].name : '未知类型'}</span>
+                `;
+                friendsContainer.appendChild(item);
+            });
+            
+            // 更新发展建议
+            const suggestionsContainer = document.getElementById('result-suggestions');
+            suggestionsContainer.innerHTML = '';
+            personality.suggestions.forEach(suggestion => {
+                const item = document.createElement('div');
+                item.innerHTML = `
+                    <h4 class="font-medium text-dark mb-2">${suggestion.title}</h4>
+                    <p class="text-dark/80">${suggestion.content}</p>
+                `;
+                suggestionsContainer.appendChild(item);
+            });
+        }
+
+        // 分享结果
+        shareResultBtn.addEventListener('click', () => {
+            shareModal.classList.remove('hidden');
+        });
+
+        // 关闭分享模态框
+        closeShareModal.addEventListener('click', () => {
+            shareModal.classList.add('hidden');
+        });
+
+        // 点击模态框外部关闭
+        shareModal.addEventListener('click', (e) => {
+            if (e.target === shareModal) {
+                shareModal.classList.add('hidden');
+            }
+        });
+
+        // 保存结果
+        saveResultBtn.addEventListener('click', () => {
+            alert('结果已保存到本地！');
+        });
+    </script>
+</body>
+</html>
+    
